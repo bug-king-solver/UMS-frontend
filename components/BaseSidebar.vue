@@ -39,6 +39,20 @@ const navigation = [
     ]
   },
   {
+    name: "Accounting",
+    subActivePaths: "/accounting",
+    sub: [
+      {
+        name: 'View Transactions',
+        to: "accounting-view-transactions",
+      },
+      {
+        name: 'Reports',
+        to: "accounting-reports"
+      }
+    ]
+  },
+  {
     name: "Settings",
     subActivePaths: "/settings",
     sub: [
