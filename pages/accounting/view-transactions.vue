@@ -109,7 +109,7 @@
                 <ButtonGroup />
               </BaseBlock>
               <BaseBlock title="Accounting Tree" bordered="true">
-                
+                <TreeStructure></TreeStructure>
               </BaseBlock>
             </div>
           </div>
@@ -119,6 +119,7 @@
     </NuxtLayout>
   </template>
   <script setup>
+  import { ref } from 'vue'
   const budgets = [
     {
         total: '10,000',
