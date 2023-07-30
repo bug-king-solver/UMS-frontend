@@ -12,7 +12,7 @@
         <BaseForm ref="form" @submit="onSubmit">
           <BaseBlock title="Transactions" content-full>
             <div class="row">
-            <div class="col-9">
+            <div class="col-md-9">
                 <div class="d-flex justify-content-around my-4">
                   <div v-for="(budget, index) in budgets" :key="index">
                     <BudgeBlock :totalAmount=budget.total :descriptions=budget.desc />
@@ -104,12 +104,14 @@
                   </table>
                 </div>
             </div>
-            <div class="col-3">
+            <div class="col-md-3">
               <BaseBlock title="Date Ranges" bordered="true">
                 <ButtonGroup />
               </BaseBlock>
               <BaseBlock title="Accounting Tree" bordered="true">
-                <TreeStructure></TreeStructure>
+                <div class="mb-3">
+                  <TreeNode :node="treeData"/>
+                </div>
               </BaseBlock>
             </div>
           </div>
@@ -119,7 +121,6 @@
     </NuxtLayout>
   </template>
   <script setup>
-  import { ref } from 'vue'
   const budgets = [
     {
         total: '10,000',
@@ -134,6 +135,30 @@
         desc: 'Total Balance'
     }
   ];
+  const treeData = {
+  name: 'Category',
+  children: [
+    {
+      name: 'Sub-Category',
+      children: [
+        {
+          name: 'Sub-Category',
+          children: [
+            {
+              name: 'Account',
+            }
+          ]
+        },
+        {
+          name: 'Account',
+        },
+      ],
+    },
+    {
+      name: 'Account',
+    },
+  ],
+};
   </script>
   <style>
 
