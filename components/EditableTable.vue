@@ -59,7 +59,8 @@
               <button class="cell-button" @click="handleEdit(index)">
                 {{ row.editable ? 'Save' : 'Edit' }}
               </button>
-              <button class="cell-button" @click="cancelEdit(index)">Cancel</button>
+              <button v-if="row.editable" class="cell-button" @click="cancelEdit(index)">Cancel</button>
+              <button v-if="!row.editable" class="cell-button" @click="removeRow(index)">Remove</button>
             </template>
             <template v-else>
               <button class="cell-button" @click="handleEdit(index)">Edit</button>
@@ -85,7 +86,11 @@ const addRow = () => {
 };
 
 const removeRow = (index) => {
-  tableData.value.splice(index, 1);
+  if (!isNewRow.value) {
+    tableData.value.splice(index, 1);
+  } else {
+    window.alert('Complete new row.')
+  }
 };
 
 const handleEdit = (index) => {
@@ -98,11 +103,15 @@ const handleEdit = (index) => {
     // Perform any save action if needed
   } else {
     // Switch to editable mode
-    row.editable = true;
-    // Focus the input field when entering edit mode
-    const editInput = $refs.editInput[index];
-    if (editInput) {
-      editInput.focus();
+    if (isNewRow.value) {
+      window.alert("Complete new row.")
+    } else {
+      row.editable = true;
+      // Focus the input field when entering edit mode
+      const editInput = $refs.editInput[index];
+      if (editInput) {
+        editInput.focus();
+      }
     }
   }
 };
@@ -133,6 +142,10 @@ const isNewRow = ref(false);
 </script>
 
 <style>
+.table-responsive {
+  overflow-x: auto;
+}
+
 table {
   width: 100%;
   border-collapse: collapse;
