@@ -10,7 +10,7 @@
           </ol>
         </nav>
         <BaseForm ref="form" @submit="onSubmit">
-          <BaseBlock title="Transactions" content-full>
+          
             <div class="row">
             <div class="col-md-9">
                 <div class="d-flex justify-content-around my-4">
@@ -18,9 +18,9 @@
                     <BudgeBlock :totalAmount=budget.total :descriptions=budget.desc />
                   </div>
                 </div>
-                <div>
-                  <EditableTable></EditableTable>
-                </div>
+                <BaseBlock title="Transactions" content-full>
+                  <EditableTable />
+                </BaseBlock>
             </div>
             <div class="col-md-3">
               <BaseBlock title="Date Ranges" bordered="true">
@@ -33,7 +33,6 @@
               </BaseBlock>
             </div>
           </div>
-        </BaseBlock>
         </BaseForm>
       </div>
     </NuxtLayout>
