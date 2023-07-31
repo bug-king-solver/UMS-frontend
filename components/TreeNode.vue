@@ -34,12 +34,21 @@
                 <i class="fa fa-fw fa-times"></i>
               </button>
             </template>
-
             <template #content>
               <div class="block-content fs-sm">
-                <p>
-                  Dropdowns
-                </p>
+                <div>
+                  <select class="form-select mb-3" aria-label="Default select example">
+                    <option selected>Type</option>
+                    <option value="1">Category</option>
+                    <option value="2">Account</option>
+                  </select>
+                  <select class="form-select mb-3" aria-label="Default select example">
+                    <option selected>Name</option>
+                    <option value="1">English</option>
+                    <option value="2">Arabic(required)</option>
+                    <option value="2">Kurdish</option>
+                  </select>
+                </div>
               </div>
               <div class="block-content block-content-full text-end bg-body">
                 <button
@@ -47,14 +56,14 @@
                   class="btn btn-sm btn-alt-secondary me-1"
                   data-bs-dismiss="modal"
                 >
-                  Close
+                  Cancel
                 </button>
                 <button
                   type="button"
                   class="btn btn-sm btn-primary"
                   data-bs-dismiss="modal"
                 >
-                  Perfect
+                  Add
                 </button>
               </div>
             </template>
