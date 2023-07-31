@@ -1,10 +1,10 @@
 <template>
   <div class="table-responsive">
-    <button class="btn btn-secondary float-end mb-2" v-if="!hasEditableRow" @click="addRow">Add Row</button>
-    <table>
+    <table border="1">
       <thead>
         <tr>
           <th>ID</th>
+          <!-- Add more headers for additional fields -->
           <th>Type</th>
           <th>Indebted</th>
           <th>Creditor</th>
@@ -13,58 +13,84 @@
           <th>Transacted With</th>
           <th>Added By</th>
           <th>Date/Time</th>
-          <th>Action</th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(row, index) in tableData" :key="index">
-          <td :class="{ editable: row.editable }">
-            <span v-if="!row.editable">{{ row.id }}</span>
-            <input v-else v-model="row.id" autofocus />
-          </td>
-          <td :class="{ editable: row.editable }">
-            <span v-if="!row.editable">{{ row.type }}</span>
-            <input v-else v-model="row.type" />
-          </td>
-          <td :class="{ editable: row.editable }">
-            <span v-if="!row.editable">{{ row.indebted }}</span>
-            <input v-else v-model="row.indebted" />
-          </td>
-          <td :class="{ editable: row.editable }">
-            <span v-if="!row.editable">{{ row.creditor }}</span>
-            <input v-else v-model="row.creditor" />
-          </td>
-          <td :class="{ editable: row.editable }">
-            <span v-if="!row.editable">{{ row.files }}</span>
-            <input v-else v-model="row.files" />
-          </td>
-          <td :class="{ editable: row.editable }">
-            <span v-if="!row.editable">{{ row.notes }}</span>
-            <input v-else v-model="row.notes" />
-          </td>
-          <td :class="{ editable: row.editable }">
-            <span v-if="!row.editable">{{ row.transactedWith }}</span>
-            <input v-else v-model="row.transactedWith" />
-          </td>
-          <td :class="{ editable: row.editable }">
-            <span v-if="!row.editable">{{ row.addedBy }}</span>
-            <input v-else v-model="row.addedBy" />
-          </td>
-          <td :class="{ editable: row.editable }">
-            <span v-if="!row.editable">{{ row.dateTime }}</span>
-            <input v-else v-model="row.dateTime" />
-          </td>
+        <tr v-for="row in tableData" :key="row.id">
           <td>
-            <template v-if="isNewRow || row.editable">
-              <button class="cell-button" @click="handleEdit(index)">
-                {{ row.editable ? 'Save' : 'Edit' }}
-              </button>
-              <button v-if="row.editable" class="cell-button" @click="cancelEdit(index)">Cancel</button>
-              <button v-if="!row.editable" class="cell-button" @click="removeRow(index)">Remove</button>
+            <template v-if="!row.id">
+              <input v-model="row.id" type="text" class="input-field">
             </template>
             <template v-else>
-              <button class="cell-button" @click="handleEdit(index)">Edit</button>
-              <button class="cell-button" @click="removeRow(index)">Remove</button>
+              <span>{{ row.id }}</span>
+            </template>
+          </td>
+          <td>
+            <template v-if="!row.id">
+              <input v-model="row.type" type="text" class="input-field">
+            </template>
+            <template v-else>
+              <span>{{ row.type }}</span>
+            </template>
+          </td>
+          <td>
+            <input
+              v-if="!row.id"
+              v-model="row.indebted"
+              type="text"
+              class="input-field"
+              :disabled="row.creditor !== ''"
+            >
+            <span v-else>{{ row.indebted }}</span>
+          </td>
+          <td>
+            <input
+              v-if="!row.id"
+              v-model="row.creditor"
+              type="text"
+              class="input-field"
+              :disabled="row.indebted !== ''"
+            >
+            <span v-else>{{ row.creditor }}</span>
+          </td>
+          <td>
+            <template v-if="!row.id">
+              <input type="file" class="input-field" @change="handleFileUpload($event, row)">
+            </template>
+            <template v-else>
+              <span>{{ row.files }}</span>
+            </template>
+          </td>
+          <td>
+            <template v-if="!row.id">
+              <input v-model="row.notes" type="text" class="input-field">
+            </template>
+            <template v-else>
+              <span>{{ row.notes }}</span>
+            </template>
+          </td>
+          <td>
+            <template v-if="!row.id">
+              <input v-model="row.transactedWith" type="text" class="input-field">
+            </template>
+            <template v-else>
+              <span>{{ row.transactedWith }}</span>
+            </template>
+          </td>
+          <td>
+            <template v-if="!row.id">
+              <input v-model="row.addedBy" type="text" class="input-field">
+            </template>
+            <template v-else>
+              <span>{{ row.addedBy }}</span>
+            </template>
+          </td>
+          <td>
+            <template v-if="!row.id">
+              <input v-model="row.dateTime" type="text" class="input-field">
+            </template>
+            <template v-else>
+              <span>{{ row.dateTime }}</span>
             </template>
           </td>
         </tr>
@@ -74,80 +100,71 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, watch } from 'vue';
 
 const tableData = ref([
-  { id: 'Id', type: 'Type', indebted: 'Indebted', creditor: 'Creditor', files: 'Files', notes: 'Notes', transactedWith: 'Transacted With', addedBy: 'AddedBy', dateTime: 'Date/Time', editable: false },
+  // The first row is empty
+  { 
+    id: '', 
+    type: '',
+    indebted: '',
+    creditor: '',
+    files: '', // Store the file name here
+    notes: '',
+    transactedWith: '',
+    addedBy: '',
+    dateTime: '',
+  },
+  // Sample data for other rows
+  { 
+    id: '1', 
+    type: 'Type1',
+    indebted: 'No',
+    creditor: 'Company A',
+    files: 'sample_file.txt',
+    notes: 'Lorem ipsum',
+    transactedWith: 'Company B',
+    addedBy: 'Admin',
+    dateTime: '2023-07-27 10:30',
+  },
+  // Add more sample rows here
 ]);
 
-const addRow = () => {
-  tableData.value.push({ id: '', type: '', indebted: '', creditor: '', files: '', notes: '', transactedWith: '', addedBy: '', dateTime: '', editable: true });
-  isNewRow.value = true;
-};
+// Watch for changes in the "Indebted" and "Creditor" fields and ensure only one is filled
+watch(() => {
+  const firstRow = tableData.value[0];
 
-const removeRow = (index) => {
-  if (!isNewRow.value) {
-    tableData.value.splice(index, 1);
-  } else {
-    window.alert('Complete new row.')
-  }
-};
-
-const handleEdit = (index) => {
-  const row = tableData.value[index];
-
-  if (row.editable) {
-    // Save changes and switch to non-editable mode
-    row.editable = false;
-    isNewRow.value = false;
-    // Perform any save action if needed
-  } else {
-    // Switch to editable mode
-    if (isNewRow.value) {
-      window.alert("Complete new row.")
-    } else {
-      row.editable = true;
-      // Focus the input field when entering edit mode
-      const editInput = $refs.editInput[index];
-      if (editInput) {
-        editInput.focus();
-      }
+  if (firstRow.indebted !== '' && firstRow.creditor !== '') {
+    // If both fields are filled, clear the last one that was typed
+    if (firstRow.lastChanged === 'ind') {
+      firstRow.creditor = '';
+    } else if (firstRow.lastChanged === 'cred') {
+      firstRow.indebted = '';
     }
   }
-};
+});
 
-const cancelEdit = (index) => {
-  const row = tableData.value[index];
-  if (isNewRow.value) {
-    // If it's a newly added row, remove it from the tableData
-    tableData.value.splice(index, 1);
-    isNewRow.value = false;
-  } else {
-    // Discard changes and switch back to non-editable mode
-    row.editable = false;
+// Helper function to track which field was changed last
+function updateLastChanged(field) {
+  const firstRow = tableData.value[0];
+  firstRow.lastChanged = field;
+}
+
+// Handle file upload event
+function handleFileUpload(event, row) {
+  const file = event.target.files[0];
+  if (file) {
+    // Store the file name in the "files" field
+    row.files = file.name;
+    // You can also handle uploading the file to a server here if needed
   }
-};
-
-const editLabel = computed(() => {
-  return tableData.value.some((row) => row.editable) ? 'Save' : 'Edit';
-});
-
-// Computed property to check if any row is in editable mode
-const hasEditableRow = computed(() => {
-  return tableData.value.some((row) => row.editable);
-});
-
-// Data property to track whether a new row is being added
-const isNewRow = ref(false);
+}
 </script>
 
 <style>
-.table-responsive {
-  overflow-x: auto;
-}
+/* Add your table styling here if needed */
 
 table {
-  width: 100%;
   border-collapse: collapse;
 }
 
@@ -158,17 +175,8 @@ td {
   text-align: center;
 }
 
-/* Set a fixed width for the first column to prevent it from being too wide on small screens */
-th:first-child,
-td:first-child {
-  min-width: 100px;
-}
-
-.editable input {
+.input-field {
   width: 100%;
-}
-
-button {
-  margin-right: 5px;
+  box-sizing: border-box;
 }
 </style>
